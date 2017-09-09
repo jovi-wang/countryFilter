@@ -1,5 +1,7 @@
 # countryFilter
 for personal currency project
+
+
 1 use react-native-country-picker, countries data from 
 https://github.com/xcarpentier/react-native-country-picker-modal/tree/master/data
 
