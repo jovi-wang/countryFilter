@@ -2,8 +2,8 @@ const _ = require('lodash');
 const fs = require('fs');
 
 //cca2 country list
-const cca2 = ["AF","AL","DZ","AS","AD","AO","AI","AQ","AG","AR","AM","AW","AU","AT","AZ","BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BA","BW","BV","BR","IO","VG","BN","BG","BF","BI","KH","CM","CA","CV","KY","CF","TD","CL","CN","CX","CC","CO","KM","CK","CR","HR","CU","CW","CY","CZ","CD","DK","DJ","DM","DO","EC","EG","SV","GQ","ER","EE","ET","FK","FO","FJ","FI","FR","GF","PF","TF","GA","GM","GE","DE","GH","GI","GR","GL","GD","GP","GU","GT","GG","GN","GW","GY","HT","HM","HN","HK","HU","IS","IN","ID","IR","IQ","IE","IM","IL","IT","CI","JM","JP","JE","JO","KZ","KE","KI","XK","KW","KG","LA","LV","LB","LS","LR","LY","LI","LT","LU","MO","MK","MG","MW","MY","MV","ML","MT","MH","MQ","MR","MU","YT","MX","FM","MD","MC","MN","ME","MS","MA","MZ","MM","NA","NR","NP","NL","NC","NZ","NI","NE","NG","NU","NF","KP","MP","NO","OM","PK","PW","PS","PA","PG","PY","PE","PH","PN","PL","PT","PR","QA","CG","RO","RU","RW","RE","BL","KN","LC","MF","PM","VC","WS","SM","SA","SN","RS","SC","SL","SG","SX","SK","SI","SB","SO","ZA","GS","KR","SS","ES","LK","SD","SR","SJ","SZ","SE","CH","SY","ST","TW","TJ","TZ","TH","TL","TG","TK","TO","TT","TN","TR","TM","TC","TV","UG","UA","AE","GB","US","UM","VI","UY","UZ","VU","VA","VE","VN","WF","EH","YE","ZM","ZW","AX"];
-console.log(cca2.length); //248
+const cca2Array = ["AF","AL","DZ","AS","AD","AO","AI","AQ","AG","AR","AM","AW","AU","AT","AZ","BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BA","BW","BV","BR","IO","VG","BN","BG","BF","BI","KH","CM","CA","CV","KY","CF","TD","CL","CN","CX","CC","CO","KM","CK","CR","HR","CU","CW","CY","CZ","CD","DK","DJ","DM","DO","EC","EG","SV","GQ","ER","EE","ET","FK","FO","FJ","FI","FR","GF","PF","TF","GA","GM","GE","DE","GH","GI","GR","GL","GD","GP","GU","GT","GG","GN","GW","GY","HT","HM","HN","HK","HU","IS","IN","ID","IR","IQ","IE","IM","IL","IT","CI","JM","JP","JE","JO","KZ","KE","KI","XK","KW","KG","LA","LV","LB","LS","LR","LY","LI","LT","LU","MO","MK","MG","MW","MY","MV","ML","MT","MH","MQ","MR","MU","YT","MX","FM","MD","MC","MN","ME","MS","MA","MZ","MM","NA","NR","NP","NL","NC","NZ","NI","NE","NG","NU","NF","KP","MP","NO","OM","PK","PW","PS","PA","PG","PY","PE","PH","PN","PL","PT","PR","QA","CG","RO","RU","RW","RE","BL","KN","LC","MF","PM","VC","WS","SM","SA","SN","RS","SC","SL","SG","SX","SK","SI","SB","SO","ZA","GS","KR","SS","ES","LK","SD","SR","SJ","SZ","SE","CH","SY","ST","TW","TJ","TZ","TH","TL","TG","TK","TO","TT","TN","TR","TM","TC","TV","UG","UA","AE","GB","US","UM","VI","UY","UZ","VU","VA","VE","VN","WF","EH","YE","ZM","ZW","AX"];
+console.log(cca2Array.length); //248
 //complete country list
 const cca2Countries = {
     "AF": {
@@ -5019,18 +5019,18 @@ for(let item in cca2Countries){
 //remove countries that does not have currency property
 const cca2CountriesFilter = JSON.parse(JSON.stringify(obj));
 console.log(_.size(cca2CountriesFilter));//247
-
-let currArray=[];
+//generate from cca2 array, but only take currency code, have repeated
+let cca2CurrArray=[];
 for(let item in cca2CountriesFilter){
-    currArray.push(cca2CountriesFilter[item]);
+    cca2CurrArray.push(cca2CountriesFilter[item]);
 }
-console.log(currArray.length);//247
+console.log(cca2CurrArray.length);//247 include redundancy
 
-const uniArray = [ ... new Set(currArray)];
-console.log(uniArray.length);//156
+const UniqueCca2Curr = [ ... new Set(cca2CurrArray)];
+console.log(UniqueCca2Curr.length);//156 remove repeated
 
-const cca2Last = _.invert(cca2CountriesFilter);
-console.log(_.size(cca2Last));//156
+const cca2CurrArrayInvert = _.invert(cca2CountriesFilter);
+console.log(_.size(cca2CurrArrayInvert));//156 another way to remove repeated
 
 
 console.log('=====================================');
@@ -5059,11 +5059,25 @@ for(let item in cca2CountriesFilter){
         finalCCA2Arr.push(item);
         finalCurrencyArr.push(cca2CountriesFilter[item]);
     }else{
+        //print item in cca2 country list but not in currency list
         console.log(item,cca2CountriesFilter[item]);
     }
 }
+//except 3 print one, 244 out of 247 countries in the currency Array
 console.log(finalCCA2Arr.length);//244
 console.log(finalCurrencyArr.length);//244
+let counter=0;
+for(let i=0;i<currencyArray.length;i++){
+    let index = UniqueCca2Curr.indexOf(currencyArray[i]);
+
+    if(index<0){
+        counter++;
+        console.log(currencyArray[i]); //length is 14
+    }
+}
+//this length is in the currency array but not in cca2 country list
+console.log(counter);
+
 
 //find unique currency code in final currency array
 const uniqueArray = [ ... new Set(finalCurrencyArr)];
